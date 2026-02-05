@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca de Aluno e Grupo</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; display: flex; justify-content: center; }
+        .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+        h2 { color: #25d366; text-align: center; }
+        input, .resultado { width: 100%; padding: 12px; margin-top: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
+        .resultado { display: none; background: #e7f3ff; border-color: #b3d7ff; margin-top: 20px; }
+        .btn-link { display: inline-block; margin-top: 10px; padding: 10px 15px; background: #25d366; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; text-align: center; width: 100%; box-sizing: border-box; }
+        label { font-weight: bold; display: block; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Localizar Aluno</h2>
+
+    <label>Digite o nome do aluno:</label>
+    <input type="text" id="inputBusca" placeholder="Ex: Fulano Beltrano..." oninput="buscarAluno()">
+
+    <div id="resultadoBusca" class="resultado">
+        <p><strong>Turma:</strong> <span id="resTurma"></span></p>
+        <p><strong>Aluno:</strong> <span id="resNome"></span></p>
+        <a id="resLink" href="#" target="_blank" class="btn-link">Entrar no Grupo da Turma</a>
+    </div>
+    
+    <p id="mensagemErro" style="color: red; display: none; margin-top: 10px;">Aluno não encontrado.</p>
+</div>
+
+<script>
+    // Substitua pelo seu link de publicação CSV (o mesmo que você já tem)
+    const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7ch7Xe01bhCoe9KHC91ezMYPQu_qgqgGg60m59zz0MgBB8C4U1Qv5PU1zquFoQRhX9GzjPgGd3dM7/pub?output=csv";
+    
+    let listaAlunos = [];
+
+    async function carregarDados() {
+        try {
+            const resposta = await fetch(urlCSV);
+            const csvText = await resposta.text();
+            const linhas = csvText.split('\n').slice(1); 
+
+            listaAlunos = linhas.map(linha => {
+                const colunas = linha.split(',');
+                return {
+                    turma: colunas[0]?.trim(),
+                    nome: colunas[1]?.trim(),
+                    link: colunas[2]?.trim() // Terceira coluna da sua planilha
+                };
+            }).filter(aluno => aluno.nome);
+        } catch (erro) {
+            console.error("Erro ao carregar planilha:", erro);
+        }
+    }
+
+    function buscarAluno() {
+        const termo = document.getElementById("inputBusca").value.toLowerCase();
+        const boxResultado = document.getElementById("resultadoBusca");
+        const msgErro = document.getElementById("mensagemErro");
+
+        if (termo.length < 3) { // Começa a buscar após 3 letras
+            boxResultado.style.display = "none";
+            msgErro.style.display = "none";
+            return;
+        }
+
+        const encontrado = listaAlunos.find(aluno => 
+            aluno.nome.toLowerCase().includes(termo)
+        );
+
+        if (encontrado) {
+            document.getElementById("resTurma").innerText = encontrado.turma;
+            document.getElementById("resNome").innerText = encontrado.nome;
+            document.getElementById("resLink").href = encontrado.link;
+            
+            boxResultado.style.display = "block";
+            msgErro.style.display = "none";
+        } else {
+            boxResultado.style.display = "none";
+            msgErro.style.display = "block";
+        }
+    }
+
+    carregarDados();
+</script>
+
+</body>
+</html>
