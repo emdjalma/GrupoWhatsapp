@@ -169,9 +169,9 @@
             listaAlunos = linhas.map(linha => {
                 const colunas = linha.split(',');
                 return {
-                    turma: colunas[0]?.trim(),
-                    nome: colunas[1]?.trim(),
-                    link: colunas[3]?.trim() 
+                    turma: colunas[1]?.trim(),
+                    nome: colunas[0]?.trim(),
+                    link: colunas[4]?.trim() 
                 };
             }).filter(aluno => aluno.nome);
         } catch (erro) {
@@ -219,6 +219,7 @@
 
 </body>
 </html>
+
 
 
 
