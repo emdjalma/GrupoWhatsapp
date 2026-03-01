@@ -134,7 +134,7 @@
 <body>
 
 <div class="card">
-    <div class="header-icons">🧸 🎨 🎈</div>
+    <div class="header-icons">🤳🌐 🏫 </div>
     <h2>Espaço dos Pais</h2>
     <p class="subtitle">Encontre a turma do seu pequeno</p>
 
@@ -144,6 +144,7 @@
     <div id="resultadoBusca" class="resultado">
         <p>🎓 <strong>Turma:</strong> <span id="resTurma"></span></p>
         <p>👶 <strong>Aluno:</strong> <span id="resNome"></span></p>
+        <p>🎂 <strong>Idade:</strong> <span id="resIdade"></span></p>
         <a id="resLink" href="#" target="_blank" class="btn-link">
             Entrar no Grupo do WhatsApp 📱
         </a>
@@ -171,6 +172,7 @@
                 return {
                     turma: colunas[1]?.trim(),
                     nome: colunas[0]?.trim(),
+                    idade: colunas[3]?.trim(),
                     link: colunas[4]?.trim() 
                 };
             }).filter(aluno => aluno.nome);
@@ -204,6 +206,7 @@
         if (encontrado) {
             document.getElementById("resTurma").innerText = encontrado.turma;
             document.getElementById("resNome").innerText = encontrado.nome;
+            document.getElementById("resIdade").innerText = encontrado.idade;
             document.getElementById("resLink").href = encontrado.link;
             
             boxResultado.style.display = "block";
